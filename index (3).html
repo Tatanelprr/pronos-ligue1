@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stats J1 — Coupe du monde 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#0D3B2E; --green-deep:#082A20; --lime:#C9E84C;
+  --paper:#F3F2EA; --card:#FFFFFF; --ink:#18241E; --muted:#6B7268;
+  --line:#DDD9C8; --mono:'IBM Plex Mono',monospace; --disp:'Space Grotesk',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.5;padding-bottom:96px}
+header{background:var(--green);color:#EAF2E6;padding:20px 16px 16px}
+header h1{font-family:var(--disp);font-weight:700;font-size:20px;letter-spacing:.02em;text-transform:uppercase}
+header p{font-size:13px;color:#A8C2B2;margin-top:2px}
+.progress{margin-top:14px}
+.progress .bar{height:8px;background:var(--green-deep);border-radius:4px;overflow:hidden}
+.progress .fill{height:100%;width:0%;background:var(--lime);transition:width .3s ease}
+.progress .label{font-family:var(--mono);font-size:12px;margin-top:6px;color:#CFE3D2}
+main{max-width:560px;margin:0 auto;padding:8px 12px 24px}
+.day{font-family:var(--disp);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin:24px 4px 10px;display:flex;align-items:center;gap:10px}
+.day::after{content:"";flex:1;height:1px;background:var(--line)}
+.match{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.strip{background:var(--green);color:#fff;display:flex;align-items:center;gap:8px;padding:10px 12px}
+.strip .team{flex:1;font-family:var(--disp);font-weight:500;font-size:14px;line-height:1.2}
+.strip .team.away{text-align:right}
+.strip input{width:42px;height:38px;text-align:center;font-family:var(--mono);font-weight:600;font-size:17px;background:var(--green-deep);color:var(--lime);border:1px solid #1C5443;border-radius:6px}
+.strip input::placeholder{color:#3E6B59}
+.strip .dash{color:#7FA890;font-family:var(--mono)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
+.stat label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+.stat .pair{display:flex;align-items:center;gap:6px}
+.stat input{width:100%;min-width:0;height:36px;text-align:center;font-family:var(--mono);font-size:14px;border:1px solid var(--line);border-radius:6px;background:#FBFAF4;color:var(--ink)}
+.stat input:focus,.strip input:focus,.notes input:focus{outline:2px solid var(--lime);outline-offset:1px}
+.stat .pair span{color:var(--muted);font-family:var(--mono);font-size:12px}
+.notes{padding:0 12px 12px}
+.notes input{width:100%;height:36px;border:1px solid var(--line);border-radius:6px;background:#FBFAF4;padding:0 10px;font-size:13px;color:var(--ink)}
+.notes input::placeholder{color:#A9AEA3}
+.actions{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);padding:10px 12px;display:flex;gap:8px;max-width:100%}
+.actions button{flex:1;height:48px;border-radius:8px;font-family:var(--disp);font-weight:700;font-size:14px;cursor:pointer;border:1px solid var(--green)}
+.btn-copy{background:var(--green);color:var(--lime)}
+.btn-copy:active{background:var(--green-deep)}
+.btn-dl{background:var(--card);color:var(--green)}
+.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:8px 16px;border-radius:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.toast.show{opacity:1}
+.reset{display:block;margin:8px auto 0;background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer}
+@media (prefers-reduced-motion: reduce){.progress .fill,.toast{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Stats journée 1</h1>
+  <p>Coupe du monde 2026 · relevés FotMob (score, xG, tirs cadrés, possession)</p>
+  <div class="progress">
+    <div class="bar"><div class="fill" id="fill"></div></div>
+    <div class="label" id="count">0 / 22 matchs renseignés</div>
+  </div>
+</header>
+<main id="app"></main>
+<div class="actions">
+  <button class="btn-copy" id="btnCopy" type="button">Copier pour Claude</button>
+  <button class="btn-dl" id="btnDl" type="button">Télécharger .txt</button>
+</div>
+<div class="toast" id="toast">Récap copié</div>
+<script>
+const MATCHES = [
+ ["Vendredi 12 juin","Canada","Bosnie"],
+ ["Samedi 13 juin","États-Unis","Paraguay"],
+ ["Samedi 13 juin","Qatar","Suisse"],
+ ["Dimanche 14 juin","Brésil","Maroc"],
+ ["Dimanche 14 juin","Haïti","Écosse"],
+ ["Dimanche 14 juin","Australie","Turquie"],
+ ["Dimanche 14 juin","Allemagne","Curaçao"],
+ ["Dimanche 14 juin","Pays-Bas","Japon"],
+ ["Lundi 15 juin","Côte d'Ivoire","Équateur"],
+ ["Lundi 15 juin","Suède","Tunisie"],
+ ["Lundi 15 juin","Espagne","Cap-Vert"],
+ ["Lundi 15 juin","Belgique","Égypte"],
+ ["Mardi 16 juin","Arabie Saoudite","Uruguay"],
+ ["Mardi 16 juin","Iran","Nouvelle-Zélande"],
+ ["Mardi 16 juin","France","Sénégal"],
+ ["Mercredi 17 juin","Irak","Norvège"],
+ ["Mercredi 17 juin","Argentine","Algérie"],
+ ["Mercredi 17 juin","Autriche","Jordanie"],
+ ["Mercredi 17 juin","Portugal","RD Congo"],
+ ["Mercredi 17 juin","Angleterre","Croatie"],
+ ["Jeudi 18 juin","Ghana","Panama"],
+ ["Jeudi 18 juin","Ouzbékistan","Colombie"]
+];
+const FIELDS = ["sh","sa","xh","xa","th","ta","p","n"];
+const KEY = "cdm26-j1-stats";
+const app = document.getElementById("app");
+let lastDay = "";
+MATCHES.forEach((m, i) => {
+  if (m[0] !== lastDay) {
+    lastDay = m[0];
+    const d = document.createElement("div");
+    d.className = "day";
+    d.textContent = m[0];
+    app.appendChild(d);
+  }
+  const card = document.createElement("section");
+  card.className = "match";
+  card.innerHTML = `
+    <div class="strip">
+      <span class="team">${m[1]}</span>
+      <input id="sh${i}" type="number" min="0" max="15" step="1" inputmode="numeric" placeholder="·" aria-label="Buts ${m[1]}">
+      <span class="dash">–</span>
+      <input id="sa${i}" type="number" min="0" max="15" step="1" inputmode="numeric" placeholder="·" aria-label="Buts ${m[2]}">
+      <span class="team away">${m[2]}</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><label>xG (dom – ext)</label>
+        <div class="pair">
+          <input id="xh${i}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="·" aria-label="xG ${m[1]}">
+          <span>–</span>
+          <input id="xa${i}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="·" aria-label="xG ${m[2]}">
+        </div>
+      </div>
+      <div class="stat"><label>Tirs cadrés (dom – ext)</label>
+        <div class="pair">
+          <input id="th${i}" type="number" min="0" step="1" inputmode="numeric" placeholder="·" aria-label="Tirs cadrés ${m[1]}">
+          <span>–</span>
+          <input id="ta${i}" type="number" min="0" step="1" inputmode="numeric" placeholder="·" aria-label="Tirs cadrés ${m[2]}">
+        </div>
+      </div>
+      <div class="stat" style="grid-column:1 / -1"><label>Possession ${m[1]} (%)</label>
+        <div class="pair" style="max-width:140px">
+          <input id="p${i}" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="·" aria-label="Possession ${m[1]} en pourcentage">
+          <span>%</span>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <input id="n${i}" type="text" maxlength="160" placeholder="Remarques : buteurs, carton rouge, blessure…" aria-label="Remarques ${m[1]} contre ${m[2]}">
+    </div>`;
+  app.appendChild(card);
+});
+const resetBtn = document.createElement("button");
+resetBtn.className = "reset";
+resetBtn.type = "button";
+resetBtn.textContent = "Tout effacer";
+resetBtn.onclick = () => {
+  if (confirm("Effacer toutes les saisies ?")) {
+    localStorage.removeItem(KEY);
+    MATCHES.forEach((_, i) => FIELDS.forEach(f => { document.getElementById(f + i).value = ""; }));
+    update();
+  }
+};
+app.appendChild(resetBtn);
+function val(f, i) { return document.getElementById(f + i).value.trim(); }
+function save() {
+  const data = MATCHES.map((_, i) => FIELDS.map(f => val(f, i)));
+  localStorage.setItem(KEY, JSON.stringify(data));
+}
+function load() {
+  try {
+    const data = JSON.parse(localStorage.getItem(KEY) || "[]");
+    data.forEach((row, i) => row && row.forEach((v, j) => {
+      const el = document.getElementById(FIELDS[j] + i);
+      if (el && v !== undefined) el.value = v;
+    }));
+  } catch (e) {}
+}
+function filledCount() {
+  let n = 0;
+  MATCHES.forEach((_, i) => { if (FIELDS.some(f => val(f, i) !== "")) n++; });
+  return n;
+}
+function buildRecap() {
+  let out = "STATS JOURNÉE 1 — COUPE DU MONDE 2026\n";
+  out += "Format : équipe dom. score équipe ext. | xG dom-ext | tirs cadrés dom-ext | possession dom.\n";
+  let day = "";
+  MATCHES.forEach((m, i) => {
+    const [sh, sa, xh, xa, th, ta, p, n] = FIELDS.map(f => val(f, i));
+    if (FIELDS.every(f => val(f, i) === "")) return;
+    if (m[0] !== day) { day = m[0]; out += "\n" + day + "\n"; }
+    out += `- ${m[1]} ${sh || "?"}-${sa || "?"} ${m[2]} | xG ${xh || "?"}-${xa || "?"} | TC ${th || "?"}-${ta || "?"} | poss. ${m[1]} ${p || "?"}%`;
+    if (n) out += ` | ${n}`;
+    out += "\n";
+  });
+  out += "\nÀ partir de ces stats, analyse les vraies performances (sur/sousperformance des xG) et fais mes pronostics avec score exact pour tous les matchs de la journée 2.\n";
+  return out;
+}
+function update() {
+  const n = filledCount();
+  document.getElementById("count").textContent = n + " / 22 matchs renseignés";
+  document.getElementById("fill").style.width = Math.round(n / 22 * 100) + "%";
+  save();
+}
+app.addEventListener("input", update);
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 1800);
+}
+document.getElementById("btnCopy").onclick = () => {
+  navigator.clipboard.writeText(buildRecap()).then(
+    () => toast("Récap copié — colle-le à Claude"),
+    () => toast("Copie impossible, utilise Télécharger")
+  );
+};
+document.getElementById("btnDl").onclick = () => {
+  const blob = new Blob([buildRecap()], { type: "text/plain;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "stats-j1-cdm2026.txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+load();
+update();
+</script>
+</body>
+</html>
