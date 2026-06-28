@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stats J2 — Coupe du monde 2026</title>
+<title>Stats J3 — Coupe du monde 2026</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +56,7 @@ main{max-width:560px;margin:0 auto;padding:8px 12px 24px}
 </head>
 <body>
 <header>
-  <h1>Stats journée 2</h1>
+  <h1>Stats journée 3</h1>
   <p>Coupe du monde 2026 · relevés FotMob (score, xG, tirs cadrés, possession)</p>
   <div class="progress">
     <div class="bar"><div class="fill" id="fill"></div></div>
@@ -71,33 +71,33 @@ main{max-width:560px;margin:0 auto;padding:8px 12px 24px}
 <div class="toast" id="toast">Récap copié</div>
 <script>
 const MATCHES = [
- ["Jeudi 18 juin","Tchéquie","Afrique du Sud"],
- ["Jeudi 18 juin","Suisse","Bosnie"],
- ["Vendredi 19 juin","Canada","Qatar"],
- ["Vendredi 19 juin","Mexique","Corée du Sud"],
- ["Vendredi 19 juin","États-Unis","Australie"],
- ["Samedi 20 juin","Écosse","Maroc"],
- ["Samedi 20 juin","Brésil","Haïti"],
- ["Samedi 20 juin","Turquie","Paraguay"],
- ["Samedi 20 juin","Pays-Bas","Suède"],
- ["Samedi 20 juin","Allemagne","Côte d'Ivoire"],
- ["Dimanche 21 juin","Équateur","Curaçao"],
- ["Dimanche 21 juin","Tunisie","Japon"],
- ["Dimanche 21 juin","Espagne","Arabie Saoudite"],
- ["Dimanche 21 juin","Belgique","Iran"],
- ["Lundi 22 juin","Uruguay","Cap-Vert"],
- ["Lundi 22 juin","Nouvelle-Zélande","Égypte"],
- ["Lundi 22 juin","Argentine","Autriche"],
- ["Lundi 22 juin","France","Irak"],
- ["Mardi 23 juin","Norvège","Sénégal"],
- ["Mardi 23 juin","Jordanie","Algérie"],
- ["Mardi 23 juin","Portugal","Ouzbékistan"],
- ["Mardi 23 juin","Angleterre","Ghana"],
- ["Mercredi 24 juin","Panama","Croatie"],
- ["Mercredi 24 juin","Colombie","RD Congo"]
+ ["Mercredi 24 juin","Suisse","Canada"],
+ ["Mercredi 24 juin","Bosnie","Qatar"],
+ ["Jeudi 25 juin","Maroc","Haïti"],
+ ["Jeudi 25 juin","Écosse","Brésil"],
+ ["Jeudi 25 juin","Afrique du Sud","Corée du Sud"],
+ ["Jeudi 25 juin","Tchéquie","Mexique"],
+ ["Jeudi 25 juin","Curaçao","Côte d'Ivoire"],
+ ["Jeudi 25 juin","Équateur","Allemagne"],
+ ["Vendredi 26 juin","Tunisie","Pays-Bas"],
+ ["Vendredi 26 juin","Japon","Suède"],
+ ["Vendredi 26 juin","Turquie","États-Unis"],
+ ["Vendredi 26 juin","Paraguay","Australie"],
+ ["Vendredi 26 juin","Sénégal","Irak"],
+ ["Vendredi 26 juin","Norvège","France"],
+ ["Samedi 27 juin","Uruguay","Espagne"],
+ ["Samedi 27 juin","Cap-Vert","Arabie Saoudite"],
+ ["Samedi 27 juin","Nouvelle-Zélande","Belgique"],
+ ["Samedi 27 juin","Égypte","Iran"],
+ ["Samedi 27 juin","Panama","Angleterre"],
+ ["Samedi 27 juin","Croatie","Ghana"],
+ ["Dimanche 28 juin","RD Congo","Ouzbékistan"],
+ ["Dimanche 28 juin","Colombie","Portugal"],
+ ["Dimanche 28 juin","Jordanie","Argentine"],
+ ["Dimanche 28 juin","Algérie","Autriche"]
 ];
 const FIELDS = ["sh","sa","xh","xa","th","ta","p","n"];
-const KEY = "cdm26-j2-stats";
+const KEY = "cdm26-j3-stats";
 const app = document.getElementById("app");
 let lastDay = "";
 MATCHES.forEach((m, i) => {
@@ -177,7 +177,7 @@ function filledCount() {
   return n;
 }
 function buildRecap() {
-  let out = "STATS JOURNÉE 2 — COUPE DU MONDE 2026\n";
+  let out = "STATS JOURNÉE 3 — COUPE DU MONDE 2026\n";
   out += "Format : équipe dom. score équipe ext. | xG dom-ext | tirs cadrés dom-ext | possession dom.\n";
   let day = "";
   MATCHES.forEach((m, i) => {
@@ -188,7 +188,7 @@ function buildRecap() {
     if (n) out += ` | ${n}`;
     out += "\n";
   });
-  out += "\nÀ partir de ces stats, analyse les vraies performances (sur/sousperformance des xG) et fais mes pronostics avec score exact pour tous les matchs de la journée 3.\n";
+  out += "\nÀ partir de ces stats, analyse les vraies performances (sur/sousperformance des xG) et fais mes pronostics avec score exact pour tous les matchs des seizièmes de finale.\n";
   return out;
 }
 function update() {
