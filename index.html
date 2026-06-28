@@ -121,9 +121,9 @@ MATCHES.forEach((m, i) => {
     <div class="stats">
       <div class="stat"><label>xG (dom – ext)</label>
         <div class="pair">
-          <input id="xh${i}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="·" aria-label="xG ${m[1]}">
+          <input id="xh${i}" type="text" inputmode="decimal" pattern="[0-9.,]*" placeholder="·" aria-label="xG ${m[1]}">
           <span>–</span>
-          <input id="xa${i}" type="number" min="0" step="0.01" inputmode="decimal" placeholder="·" aria-label="xG ${m[2]}">
+          <input id="xa${i}" type="text" inputmode="decimal" pattern="[0-9.,]*" placeholder="·" aria-label="xG ${m[2]}">
         </div>
       </div>
       <div class="stat"><label>Tirs cadrés (dom – ext)</label>
@@ -181,7 +181,9 @@ function buildRecap() {
   out += "Format : équipe dom. score équipe ext. | xG dom-ext | tirs cadrés dom-ext | possession dom.\n";
   let day = "";
   MATCHES.forEach((m, i) => {
-    const [sh, sa, xh, xa, th, ta, p, n] = FIELDS.map(f => val(f, i));
+    const [sh, sa, xhr, xar, th, ta, p, n] = FIELDS.map(f => val(f, i));
+    const xh = xhr.replace(",", ".");
+    const xa = xar.replace(",", ".");
     if (FIELDS.every(f => val(f, i) === "")) return;
     if (m[0] !== day) { day = m[0]; out += "\n" + day + "\n"; }
     out += `- ${m[1]} ${sh || "?"}-${sa || "?"} ${m[2]} | xG ${xh || "?"}-${xa || "?"} | TC ${th || "?"}-${ta || "?"} | poss. ${m[1]} ${p || "?"}%`;
