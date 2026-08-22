@@ -1,0 +1,73 @@
+name: CI/CD — Validation et déploiement GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un seul déploiement à la fois ; on laisse le déploiement en cours se terminer.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # ──────────────────────────────────────────────
+  # JOB 1 : validation du site avant déploiement
+  # ──────────────────────────────────────────────
+  validate:
+    name: Validation HTML
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code source
+        uses: actions/checkout@v4
+
+      - name: Vérification de la présence de index.html
+        run: |
+          if [ ! -f index.html ]; then
+            echo "::error::index.html introuvable à la racine du dépôt."
+            exit 1
+          fi
+          echo "index.html trouvé."
+
+      - name: Vérification que index.html n'est pas vide
+        run: |
+          if [ ! -s index.html ]; then
+            echo "::error::index.html est vide."
+            exit 1
+          fi
+          echo "index.html non vide — $(wc -c < index.html) octets."
+
+      - name: Validation de la syntaxe HTML (html-validate)
+        run: npx --yes html-validate index.html
+
+  # ──────────────────────────────────────────────
+  # JOB 2 : déploiement (conditionné au succès de validate)
+  # ──────────────────────────────────────────────
+  deploy:
+    name: Déploiement GitHub Pages
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Récupération du code source
+        uses: actions/checkout@v4
+
+      - name: Configuration de GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Mise en archive de la racine du dépôt
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Tout le contenu de la racine (index.html, favicon.png, README.md…)
+          path: .
+
+      - name: Déploiement sur GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
