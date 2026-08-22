@@ -3,203 +3,402 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stats Finale — Coupe du monde 2026</title>
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
+<title>Pronostics Ligue 1 2026-2027 — Suivi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --green:#0D3B2E; --green-deep:#082A20; --lime:#C9E84C;
-  --paper:#F3F2EA; --card:#FFFFFF; --ink:#18241E; --muted:#6B7268;
-  --line:#DDD9C8; --mono:'IBM Plex Mono',monospace; --disp:'Space Grotesk',sans-serif;
+  --ink:#12182B; --ink-soft:#2A3350; --paper:#EEF1F5; --card:#FFFFFF;
+  --line:#D8DEE8; --muted:#6A7392; --amber:#E6A02C; --amber-deep:#B8791A;
+  --win:#1E8E5A; --loss:#C6413B; --draw:#7A6BD6;
+  --disp:'Fraunces',serif; --body:'Inter',system-ui,sans-serif; --mono:'Spline Sans Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.5;padding-bottom:96px}
-header{background:var(--green);color:#EAF2E6;padding:20px 16px 16px}
-header h1{font-family:var(--disp);font-weight:700;font-size:20px;letter-spacing:.02em;text-transform:uppercase}
-header p{font-size:13px;color:#A8C2B2;margin-top:2px}
-.progress{margin-top:14px}
-.progress .bar{height:8px;background:var(--green-deep);border-radius:4px;overflow:hidden}
-.progress .fill{height:100%;width:0%;background:var(--lime);transition:width .3s ease}
-.progress .label{font-family:var(--mono);font-size:12px;margin-top:6px;color:#CFE3D2}
-main{max-width:560px;margin:0 auto;padding:8px 12px 24px}
-.day{font-family:var(--disp);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin:24px 4px 10px;display:flex;align-items:center;gap:10px}
-.day::after{content:"";flex:1;height:1px;background:var(--line)}
-.match{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
-.strip{background:var(--green);color:#fff;display:flex;align-items:center;gap:8px;padding:10px 12px}
-.strip .team{flex:1;font-family:var(--disp);font-weight:500;font-size:14px;line-height:1.2}
-.strip .team.away{text-align:right}
-.strip input{width:42px;height:38px;text-align:center;font-family:var(--mono);font-weight:600;font-size:17px;background:var(--green-deep);color:var(--lime);border:1px solid #1C5443;border-radius:6px}
-.strip input::placeholder{color:#3E6B59}
-.strip .dash{color:#7FA890;font-family:var(--mono)}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
-.stat label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
-.stat .pair{display:flex;align-items:center;gap:6px}
-.stat input{width:100%;min-width:0;height:36px;text-align:center;font-family:var(--mono);font-size:14px;border:1px solid var(--line);border-radius:6px;background:#FBFAF4;color:var(--ink)}
-.stat input:focus,.strip input:focus,.notes input:focus{outline:2px solid var(--lime);outline-offset:1px}
-.stat .pair span{color:var(--muted);font-family:var(--mono);font-size:12px}
-.notes{padding:0 12px 12px}
-.notes input{width:100%;height:36px;border:1px solid var(--line);border-radius:6px;background:#FBFAF4;padding:0 10px;font-size:13px;color:var(--ink)}
-.notes input::placeholder{color:#A9AEA3}
-.actions{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);padding:10px 12px;display:flex;gap:8px;max-width:100%}
-.actions button{flex:1;height:48px;border-radius:8px;font-family:var(--disp);font-weight:700;font-size:14px;cursor:pointer;border:1px solid var(--green)}
-.btn-copy{background:var(--green);color:var(--lime)}
-.btn-copy:active{background:var(--green-deep)}
-.btn-dl{background:var(--card);color:var(--green)}
-.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:8px 16px;border-radius:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:820px;margin:0 auto;padding:0 14px 120px}
+
+/* Header */
+header{background:var(--ink);color:#EAEEF6;margin:0 -14px 0;padding:22px 18px 20px;border-bottom:3px solid var(--amber)}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)}
+header h1{font-family:var(--disp);font-weight:800;font-size:27px;line-height:1.05;margin-top:4px;letter-spacing:-.01em}
+header p.sub{font-size:13px;color:#9AA6C4;margin-top:6px}
+
+/* Dashboard */
+.dash{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+.stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 8px;text-align:center}
+.stat .v{font-family:var(--mono);font-weight:600;font-size:19px;color:#fff;line-height:1}
+.stat .l{font-size:10px;color:#9AA6C4;margin-top:5px;text-transform:uppercase;letter-spacing:.05em}
+@media(max-width:520px){.dash{grid-template-columns:repeat(2,1fr)}header h1{font-size:23px}}
+
+/* Journée nav */
+.jnav{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 6px}
+.jtab{font-family:var(--mono);font-size:13px;padding:7px 13px;border:1px solid var(--line);background:var(--card);border-radius:20px;cursor:pointer;color:var(--ink-soft);font-weight:600}
+.jtab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.jtab .dot{color:var(--win);font-size:15px;line-height:0}
+.jmeta{font-size:12.5px;color:var(--muted);margin:2px 4px 14px}
+
+/* Match card */
+.match{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:14px;overflow:hidden}
+.mhead{display:flex;align-items:stretch;background:var(--ink);color:#fff}
+.mhead .side{flex:1;display:flex;flex-direction:column;justify-content:center;padding:12px 14px;font-weight:600;font-size:15px}
+.mhead .side.away{text-align:right}
+.mhead .vs{display:flex;align-items:center;font-family:var(--mono);font-size:12px;color:#8C97B8;padding:0 4px}
+
+/* Prediction band */
+.pred{padding:12px 14px;border-bottom:1px solid var(--line);background:#FBFAF6}
+.pred .row1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber-deep);font-weight:600}
+.pscore{font-family:var(--mono);font-weight:600;font-size:20px;letter-spacing:.04em}
+.badge{font-family:var(--mono);font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;color:#fff}
+.b1{background:var(--win)} .bX{background:var(--draw)} .b2{background:var(--loss)}
+.conf{margin-left:auto;display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+.confbar{width:64px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.conffill{height:100%;background:var(--amber)}
+.analyse{font-size:13px;color:var(--ink-soft);margin-top:9px;display:none}
+.analyse.open{display:block}
+.analyse .fac{color:var(--muted);font-size:12px;margin-top:5px;font-style:italic}
+.atoggle{font-family:var(--mono);font-size:11px;color:var(--amber-deep);background:none;border:none;cursor:pointer;padding:6px 0 0;font-weight:600}
+
+/* Reality inputs */
+.real{padding:12px 14px}
+.real .lab{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.real .lab::after{content:"";flex:1;height:1px;background:var(--line)}
+.grid{display:grid;grid-template-columns:96px 1fr 1fr;gap:7px 8px;align-items:center}
+.grid .gl{font-size:12px;color:var(--muted)}
+.grid input{width:100%;min-width:0;height:36px;text-align:center;font-family:var(--mono);font-size:14px;border:1px solid var(--line);border-radius:7px;background:#FBFAF6;color:var(--ink)}
+.grid input:focus{outline:2px solid var(--amber);outline-offset:1px;background:#fff}
+.grid .teamlab{font-size:11px;font-weight:600;color:var(--ink-soft);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Ecart / verdict */
+.verdict{margin-top:12px;padding:11px 12px;border-radius:10px;background:var(--paper);font-size:13px;display:none}
+.verdict.show{display:block}
+.verdict .vtop{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-family:var(--mono);font-size:13px}
+.pts{margin-left:auto;font-family:var(--mono);font-weight:600;font-size:14px;padding:2px 9px;border-radius:6px;background:var(--ink);color:var(--amber)}
+.vrow{display:flex;justify-content:space-between;gap:12px;margin-top:7px;font-size:12.5px;color:var(--ink-soft);font-family:var(--mono)}
+.vrow .k{color:var(--muted)}
+.chip{font-family:var(--mono);font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:5px}
+.chip.ok{background:rgba(30,142,90,.14);color:var(--win)}
+.chip.no{background:rgba(198,65,59,.14);color:var(--loss)}
+.chip.ex{background:var(--amber);color:#fff}
+
+/* Actions */
+.actions{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:11px 14px;display:flex;justify-content:center}
+.actions .inner{width:100%;max-width:820px;display:flex;gap:9px}
+button.act{flex:1;height:50px;border-radius:11px;font-family:var(--body);font-weight:600;font-size:14px;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:7px}
+.copy{background:var(--ink);color:#fff}
+.copy .j{font-family:var(--mono);color:var(--amber)}
+.reset{flex:0 0 46px;background:var(--card);border:1px solid var(--line);color:var(--muted);font-size:18px}
+.toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:9px 16px;border-radius:22px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:20;max-width:90%;text-align:center}
 .toast.show{opacity:1}
-.reset{display:block;margin:8px auto 0;background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer}
-@media (prefers-reduced-motion: reduce){.progress .fill,.toast{transition:none}}
+
+.note{font-size:12px;color:var(--muted);margin:14px 4px;line-height:1.5}
+.note b{color:var(--ink-soft)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
+<div class="wrap">
 <header>
-  <h1>Stats finale &amp; 3e place</h1>
-  <p>Finale & 3e place · relevés FotMob (score, xG, tirs cadrés, possession)</p>
-  <div class="progress">
-    <div class="bar"><div class="fill" id="fill"></div></div>
-    <div class="label" id="count">0 / 2 matchs renseignés</div>
-  </div>
+  <div class="kicker">Saison 2026-2027 · Suivi statistique</div>
+  <h1>Pronostics Ligue 1 — Claude vs Réalité</h1>
+  <p class="sub">Pronostics figés avant chaque journée. Renseigne les données réelles, mesure l'écart, suis la progression du modèle.</p>
+  <div class="dash" id="dash"></div>
 </header>
-<main id="app"></main>
-<div class="actions">
-  <button class="btn-copy" id="btnCopy" type="button">Copier pour Claude</button>
-  <button class="btn-dl" id="btnDl" type="button">Télécharger .txt</button>
+
+<div class="jnav" id="jnav"></div>
+<div class="jmeta" id="jmeta"></div>
+<div id="matches"></div>
+
+<p class="note" id="footnote"></p>
 </div>
-<div class="toast" id="toast">Récap copié</div>
+
+<div class="actions"><div class="inner">
+  <button class="act reset" id="btnReset" title="Effacer les données saisies" aria-label="Effacer les données saisies">⟲</button>
+  <button class="act copy" id="btnCopy"><span>Copier pour Claude — <span class="j" id="nextj">Préparer la J2</span></span></button>
+</div></div>
+<div class="toast" id="toast"></div>
+
 <script>
-const MATCHES = [
- ["Samedi 18 juillet — 3e place","France","Angleterre"],
- ["Dimanche 19 juillet — Finale","Espagne","Argentine"]
+/* ============================================================
+   PRONOSTICS IMMUABLES — ne jamais modifier après coup.
+   res: "1" = victoire domicile, "X" = nul, "2" = victoire extérieur
+   ============================================================ */
+const SEASON = "2026-2027";
+const JOURNEES = [
+  { n:1, dates:"21–23 août 2026", matches:[
+    {id:"j1m1", home:"Marseille", away:"Strasbourg", pred:{h:1,a:1,res:"X",conf:44,
+      analyse:"Prono révisé avant coup d'envoi : OM vidé de ses attaquants (départs de Greenwood, Aubameyang, Medina…), nouvel entraîneur (Genesio) et zéro automatisme au coup d'envoi. Le Vélodrome garde un léger avantage, mais Strasbourg (8e, jeune et cohérent) peut arracher le nul.",
+      fac:"Dégraissage offensif de l'OM · nouvel entraîneur · manque d'automatismes de reprise · avantage domicile réduit · solidité de Strasbourg."}},
+    {id:"j1m2", home:"Rennes", away:"PSG", pred:{h:1,a:2,res:"2",conf:55,
+      analyse:"Prono révisé avant coup d'envoi : match inversé (pelouse du Parc des Princes hors d'usage), Rennes reçoit au Roazhon Park où il avait battu le PSG 3-1 en février. Paris arrive après une défaite au Trophée des Champions face à Lens, avec des absents (Akliouche, Chevalier, Nuno Mendes suspendu) et un barrage de C1 dans la foulée : rotation probable. Le PSG reste supérieur mais l'écart se resserre nettement.",
+      fac:"Match inversé, Rennes à domicile · défaite parisienne au Trophée des Champions · absences PSG (Akliouche, Chevalier, Nuno Mendes) · Rennes bête noire (3-1 en février) mais fin de préparation ratée · profondeur d'effectif parisienne toujours décisive."}},
+    {id:"j1m3", home:"RC Lens", away:"Auxerre", pred:{h:2,a:0,res:"1",conf:60,
+      analyse:"Bollaert reste une forteresse, mais la transition d'entraîneur (départ de Pierre Sage) est à surveiller. Auxerre est faible à l'extérieur.",
+      fac:"Forteresse Bollaert · qualité Lens · risque transition coach · faiblesse d'Auxerre dehors."}},
+    {id:"j1m4", home:"Le Havre", away:"Monaco", pred:{h:1,a:2,res:"2",conf:55,
+      analyse:"Monaco a l'effectif le plus fourni du match malgré le départ d'Akliouche ; Le Havre s'accroche chez lui.",
+      fac:"Qualité Monaco · résilience à domicile du Havre · intégration de début de saison."}},
+    {id:"j1m5", home:"Nice", away:"Lorient", pred:{h:1,a:1,res:"X",conf:40,
+      analyse:"Nice a raté sa saison (16e, barragiste) ; Lorient est un solide promu-maintenu. Match très ouvert, confiance volontairement basse.",
+      fac:"Mauvaise dynamique niçoise · solidité de Lorient · avantage domicile · niveau proche."}},
+    {id:"j1m6", home:"Toulouse", away:"Lyon", pred:{h:1,a:2,res:"2",conf:50,
+      analyse:"Lyon a le meilleur effectif mais se déplace, et Toulouse change d'entraîneur.",
+      fac:"Supériorité OL · Toulouse à domicile + nouveau coach · distraction européenne lyonnaise."}},
+    {id:"j1m7", home:"Angers", away:"Lille", pred:{h:0,a:1,res:"2",conf:52,
+      analyse:"Lille supérieur, mais nouveau coach (départ de Genesio) et déplacement piégeux.",
+      fac:"Qualité Lille · combativité d'Angers chez lui · transition d'entraîneur lilloise."}},
+    {id:"j1m8", home:"Le Mans", away:"Brest", pred:{h:1,a:2,res:"2",conf:48,
+      analyse:"Duel d'expérience : Brest connaît la L1, Le Mans revient après 16 ans d'absence.",
+      fac:"Expérience L1 de Brest · enthousiasme et domicile du promu · incertitude d'un néo-promu."}},
+    {id:"j1m9", home:"Troyes", away:"Paris FC", pred:{h:1,a:2,res:"2",conf:47,
+      analyse:"Le Paris FC (11e, installé et investisseur) part favori face au promu troyen.",
+      fac:"Expérience L1 et moyens du PFC · boost domicile de Troyes · imprévisibilité des promus."}}
+  ]}
 ];
-const FIELDS = ["sh","sa","xh","xa","th","ta","p","n"];
-const KEY = "cdm26-finale-stats";
-const app = document.getElementById("app");
-let lastDay = "";
-MATCHES.forEach((m, i) => {
-  if (m[0] !== lastDay) {
-    lastDay = m[0];
-    const d = document.createElement("div");
-    d.className = "day";
-    d.textContent = m[0];
-    app.appendChild(d);
+
+/* ============================================================
+   État réel (localStorage)
+   ============================================================ */
+const STORE = "l1-2627-real";
+let REAL = {};
+try { REAL = JSON.parse(localStorage.getItem(STORE) || "{}"); } catch(e){ REAL = {}; }
+function save(){ try { localStorage.setItem(STORE, JSON.stringify(REAL)); } catch(e){} }
+
+const FIELDS = ["sh","sa","posH","posA","xgH","xgA","tirH","tirA","cadH","cadA"];
+function findMatch(id){ for(const j of JOURNEES){ for(const m of j.matches){ if(m.id===id) return {m,j}; } } return null; }
+function num(v){ if(v===undefined||v===null||v==="") return null; const n=parseFloat(String(v).replace(",",".")); return isNaN(n)?null:n; }
+function resultOf(h,a){ if(h===null||a===null) return null; return h>a?"1":(h<a?"2":"X"); }
+
+/* Points: +3 bon résultat, +2 bonus score exact (max 5) */
+function scoreMatch(m){
+  const r = REAL[m.id]||{};
+  const rh=num(r.sh), ra=num(r.sa);
+  if(rh===null||ra===null) return null;
+  const realRes = resultOf(rh,ra);
+  const goodRes = realRes===m.pred.res;
+  const exact = goodRes && rh===m.pred.h && ra===m.pred.a;
+  let pts = 0; if(goodRes) pts+=3; if(exact) pts+=2;
+  const predDiff=m.pred.h-m.pred.a, realDiff=rh-ra;
+  return { rh,ra,realRes,goodRes,exact,pts, diffErr:Math.abs(predDiff-realDiff) };
+}
+
+/* ============================================================
+   Rendu
+   ============================================================ */
+let activeJ = 1;
+const RES_LABEL = {"1":"Victoire domicile","X":"Match nul","2":"Victoire extérieur"};
+
+function renderDash(){
+  let played=0, goodRes=0, exact=0, pts=0, maxPts=0, diffErrSum=0;
+  let confCorrect=0,confCorrectN=0, confWrong=0,confWrongN=0;
+  for(const j of JOURNEES){ for(const m of j.matches){
+    const s=scoreMatch(m);
+    if(s){ played++; maxPts+=5; pts+=s.pts; diffErrSum+=s.diffErr;
+      if(s.goodRes){goodRes++; confCorrect+=m.pred.conf; confCorrectN++;} else {confWrong+=m.pred.conf; confWrongN++;}
+      if(s.exact) exact++;
+    }
+  }}
+  const rate = played? Math.round(goodRes/played*100):0;
+  const dash=document.getElementById("dash");
+  dash.innerHTML =
+    stat(played? rate+"%":"—", "Bons résultats")+
+    stat(played? exact:"—", "Scores exacts")+
+    stat(played? pts:"—", "Points")+
+    stat(played? "±"+(diffErrSum/played).toFixed(1):"—", "Err. diff. moy.");
+}
+function stat(v,l){ return `<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`; }
+
+function renderNav(){
+  const nav=document.getElementById("jnav");
+  nav.innerHTML="";
+  for(const j of JOURNEES){
+    const complete = j.matches.every(m=>scoreMatch(m));
+    const b=document.createElement("button");
+    b.className="jtab"+(j.n===activeJ?" active":"");
+    b.innerHTML = "J"+j.n + (complete?' <span class="dot">●</span>':'');
+    b.onclick=()=>{ activeJ=j.n; renderAll(); };
+    nav.appendChild(b);
   }
-  const card = document.createElement("section");
-  card.className = "match";
-  card.innerHTML = `
-    <div class="strip">
-      <span class="team">${m[1]}</span>
-      <input id="sh${i}" type="number" min="0" max="15" step="1" inputmode="numeric" placeholder="·" aria-label="Buts ${m[1]}">
-      <span class="dash">–</span>
-      <input id="sa${i}" type="number" min="0" max="15" step="1" inputmode="numeric" placeholder="·" aria-label="Buts ${m[2]}">
-      <span class="team away">${m[2]}</span>
-    </div>
-    <div class="stats">
-      <div class="stat"><label>xG (dom – ext)</label>
-        <div class="pair">
-          <input id="xh${i}" type="text" inputmode="decimal" pattern="[0-9.,]*" placeholder="·" aria-label="xG ${m[1]}">
-          <span>–</span>
-          <input id="xa${i}" type="text" inputmode="decimal" pattern="[0-9.,]*" placeholder="·" aria-label="xG ${m[2]}">
-        </div>
+}
+
+function renderMatches(){
+  const j = JOURNEES.find(x=>x.n===activeJ);
+  document.getElementById("jmeta").textContent = "Journée "+j.n+" · "+j.dates;
+  const wrap=document.getElementById("matches");
+  wrap.innerHTML="";
+  for(const m of j.matches){
+    const r = REAL[m.id]||{};
+    const card=document.createElement("section");
+    card.className="match";
+    const badgeCls = "b"+m.pred.res;
+    card.innerHTML = `
+      <div class="mhead">
+        <div class="side">${m.home}</div>
+        <div class="vs">vs</div>
+        <div class="side away">${m.away}</div>
       </div>
-      <div class="stat"><label>Tirs cadrés (dom – ext)</label>
-        <div class="pair">
-          <input id="th${i}" type="number" min="0" step="1" inputmode="numeric" placeholder="·" aria-label="Tirs cadrés ${m[1]}">
-          <span>–</span>
-          <input id="ta${i}" type="number" min="0" step="1" inputmode="numeric" placeholder="·" aria-label="Tirs cadrés ${m[2]}">
+      <div class="pred">
+        <div class="row1">
+          <span class="tag">Prono Claude</span>
+          <span class="pscore">${m.pred.h}–${m.pred.a}</span>
+          <span class="badge ${badgeCls}">${RES_LABEL[m.pred.res]}</span>
+          <span class="conf"><span class="confbar"><span class="conffill" style="width:${m.pred.conf}%"></span></span>${m.pred.conf}%</span>
         </div>
+        <div class="analyse" id="an-${m.id}">${m.analyse||m.pred.analyse||""}
+          <div class="fac">${m.pred.fac||""}</div></div>
+        <button class="atoggle" data-an="${m.id}">Voir l'analyse ▾</button>
       </div>
-      <div class="stat" style="grid-column:1 / -1"><label>Possession ${m[1]} (%)</label>
-        <div class="pair" style="max-width:140px">
-          <input id="p${i}" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="·" aria-label="Possession ${m[1]} en pourcentage">
-          <span>%</span>
+      <div class="real">
+        <div class="lab">Données réelles</div>
+        <div class="grid">
+          <span class="gl"></span><span class="teamlab">${m.home}</span><span class="teamlab">${m.away}</span>
+          <span class="gl">Score</span>
+          <input inputmode="numeric" data-f="sh" data-m="${m.id}" value="${r.sh??""}" aria-label="Buts ${m.home}">
+          <input inputmode="numeric" data-f="sa" data-m="${m.id}" value="${r.sa??""}" aria-label="Buts ${m.away}">
+          <span class="gl">Possession %</span>
+          <input inputmode="numeric" data-f="posH" data-m="${m.id}" value="${r.posH??""}" aria-label="Possession ${m.home}">
+          <input inputmode="numeric" data-f="posA" data-m="${m.id}" value="${r.posA??""}" aria-label="Possession ${m.away}">
+          <span class="gl">xG</span>
+          <input inputmode="decimal" data-f="xgH" data-m="${m.id}" value="${r.xgH??""}" aria-label="xG ${m.home}">
+          <input inputmode="decimal" data-f="xgA" data-m="${m.id}" value="${r.xgA??""}" aria-label="xG ${m.away}">
+          <span class="gl">Tirs</span>
+          <input inputmode="numeric" data-f="tirH" data-m="${m.id}" value="${r.tirH??""}" aria-label="Tirs ${m.home}">
+          <input inputmode="numeric" data-f="tirA" data-m="${m.id}" value="${r.tirA??""}" aria-label="Tirs ${m.away}">
+          <span class="gl">Tirs cadrés</span>
+          <input inputmode="numeric" data-f="cadH" data-m="${m.id}" value="${r.cadH??""}" aria-label="Tirs cadrés ${m.home}">
+          <input inputmode="numeric" data-f="cadA" data-m="${m.id}" value="${r.cadA??""}" aria-label="Tirs cadrés ${m.away}">
         </div>
-      </div>
-    </div>
-    <div class="notes">
-      <input id="n${i}" type="text" maxlength="160" placeholder="Remarques : buteurs, carton rouge, blessure…" aria-label="Remarques ${m[1]} contre ${m[2]}">
-    </div>`;
-  app.appendChild(card);
-});
-const resetBtn = document.createElement("button");
-resetBtn.className = "reset";
-resetBtn.type = "button";
-resetBtn.textContent = "Tout effacer";
-resetBtn.onclick = () => {
-  if (confirm("Effacer toutes les saisies ?")) {
-    localStorage.removeItem(KEY);
-    MATCHES.forEach((_, i) => FIELDS.forEach(f => { document.getElementById(f + i).value = ""; }));
-    update();
+        <div class="verdict" id="vd-${m.id}"></div>
+      </div>`;
+    wrap.appendChild(card);
+    renderVerdict(m);
   }
-};
-app.appendChild(resetBtn);
-function val(f, i) { return document.getElementById(f + i).value.trim(); }
-function save() {
-  const data = MATCHES.map((_, i) => FIELDS.map(f => val(f, i)));
-  localStorage.setItem(KEY, JSON.stringify(data));
-}
-function load() {
-  try {
-    const data = JSON.parse(localStorage.getItem(KEY) || "[]");
-    data.forEach((row, i) => row && row.forEach((v, j) => {
-      const el = document.getElementById(FIELDS[j] + i);
-      if (el && v !== undefined) el.value = v;
-    }));
-  } catch (e) {}
-}
-function filledCount() {
-  let n = 0;
-  MATCHES.forEach((_, i) => { if (FIELDS.some(f => val(f, i) !== "")) n++; });
-  return n;
-}
-function buildRecap() {
-  let out = "STATS FINALE & 3e PLACE — COUPE DU MONDE 2026\n";
-  out += "Format : équipe dom. score équipe ext. | xG dom-ext | tirs cadrés dom-ext | possession dom.\n";
-  let day = "";
-  MATCHES.forEach((m, i) => {
-    const [sh, sa, xhr, xar, th, ta, p, n] = FIELDS.map(f => val(f, i));
-    const xh = xhr.replace(",", ".");
-    const xa = xar.replace(",", ".");
-    if (FIELDS.every(f => val(f, i) === "")) return;
-    if (m[0] !== day) { day = m[0]; out += "\n" + day + "\n"; }
-    out += `- ${m[1]} ${sh || "?"}-${sa || "?"} ${m[2]} | xG ${xh || "?"}-${xa || "?"} | TC ${th || "?"}-${ta || "?"} | poss. ${m[1]} ${p || "?"}%`;
-    if (n) out += ` | ${n}`;
-    out += "\n";
+  wrap.querySelectorAll(".atoggle").forEach(b=>{
+    b.onclick=()=>{ const el=document.getElementById("an-"+b.dataset.an); el.classList.toggle("open");
+      b.textContent = el.classList.contains("open")?"Masquer l'analyse ▴":"Voir l'analyse ▾"; };
   });
-  out += "\nÀ partir de ces stats, analyse les vraies performances (sur/sousperformance des xG) et fais le bilan complet de ma campagne de pronostics sur toute la Coupe du monde (précision des scores exacts, des vainqueurs, réussite des boosts).\n";
+  wrap.querySelectorAll("input[data-f]").forEach(inp=>{
+    inp.addEventListener("input",()=>{
+      const id=inp.dataset.m, f=inp.dataset.f;
+      if(!REAL[id]) REAL[id]={};
+      REAL[id][f]=inp.value;
+      save();
+      renderVerdict(findMatch(id).m);
+      renderDash(); renderNav();
+    });
+  });
+}
+
+function renderVerdict(m){
+  const el=document.getElementById("vd-"+m.id);
+  if(!el) return;
+  const s=scoreMatch(m);
+  if(!s){ el.classList.remove("show"); el.innerHTML=""; return; }
+  const r=REAL[m.id]||{};
+  const resChip = s.goodRes? `<span class="chip ok">Résultat ✓</span>`:`<span class="chip no">Résultat ✗</span>`;
+  const exChip = s.exact? `<span class="chip ex">SCORE EXACT</span>`:"";
+  let rows="";
+  const pv = (k,ph,pa,rh,ra)=>{
+    if(rh===null && ra===null) return "";
+    return `<div class="vrow"><span class="k">${k}</span><span>prono ${ph}–${pa} · réel ${rh??"?"}–${ra??"?"}</span></div>`;
+  };
+  rows += `<div class="vrow"><span class="k">Score</span><span>prono ${m.pred.h}–${m.pred.a} · réel ${s.rh}–${s.ra}</span></div>`;
+  const xgH=num(r.xgH),xgA=num(r.xgA);
+  if(xgH!==null||xgA!==null) rows+=`<div class="vrow"><span class="k">xG réel</span><span>${xgH??"?"} – ${xgA??"?"}</span></div>`;
+  const posH=num(r.posH),posA=num(r.posA);
+  if(posH!==null||posA!==null) rows+=`<div class="vrow"><span class="k">Possession</span><span>${posH??"?"}% – ${posA??"?"}%</span></div>`;
+  const tirH=num(r.tirH),tirA=num(r.tirA);
+  if(tirH!==null||tirA!==null) rows+=`<div class="vrow"><span class="k">Tirs</span><span>${tirH??"?"} – ${tirA??"?"}</span></div>`;
+  const cadH=num(r.cadH),cadA=num(r.cadA);
+  if(cadH!==null||cadA!==null) rows+=`<div class="vrow"><span class="k">Tirs cadrés</span><span>${cadH??"?"} – ${cadA??"?"}</span></div>`;
+  el.innerHTML = `<div class="vtop">${resChip}${exChip}<span class="pts">${s.pts} pt${s.pts>1?"s":""}</span></div>${rows}`;
+  el.classList.add("show");
+}
+
+/* ============================================================
+   Bouton Copier pour Claude
+   ============================================================ */
+function nextJournee(){ return JOURNEES[JOURNEES.length-1].n + 1; }
+
+function buildCopy(){
+  const done = JOURNEES.filter(j=>j.matches.some(m=>scoreMatch(m)));
+  let out = `SUIVI PRONOSTICS LIGUE 1 ${SEASON} — DONNÉES POUR CLAUDE\n`;
+  out += `Format par match : Prono Claude (score, sens, confiance) | Réel (score, possession, xG, tirs, tirs cadrés) | Points\n`;
+  out += `Barème : +3 bon sens de résultat, +2 bonus si score exact (max 5).\n`;
+
+  let played=0,goodRes=0,exact=0,pts=0,diffErrSum=0, cCorr=0,cCorrN=0,cWrong=0,cWrongN=0;
+
+  for(const j of JOURNEES){
+    const anyReal = j.matches.some(m=>scoreMatch(m));
+    out += `\n===== JOURNÉE ${j.n} (${j.dates}) =====\n`;
+    for(const m of j.matches){
+      const s=scoreMatch(m); const r=REAL[m.id]||{};
+      out += `\n• ${m.home} – ${m.away}\n`;
+      out += `   Prono : ${m.pred.h}-${m.pred.a} (${RES_LABEL[m.pred.res]}, confiance ${m.pred.conf}%)\n`;
+      if(s){
+        out += `   Réel  : ${s.rh}-${s.ra}`;
+        const xgH=num(r.xgH),xgA=num(r.xgA); if(xgH!==null||xgA!==null) out+=` | xG ${xgH??"?"}-${xgA??"?"}`;
+        const posH=num(r.posH),posA=num(r.posA); if(posH!==null||posA!==null) out+=` | poss ${posH??"?"}-${posA??"?"}%`;
+        const tirH=num(r.tirH),tirA=num(r.tirA); if(tirH!==null||tirA!==null) out+=` | tirs ${tirH??"?"}-${tirA??"?"}`;
+        const cadH=num(r.cadH),cadA=num(r.cadA); if(cadH!==null||cadA!==null) out+=` | cadrés ${cadH??"?"}-${cadA??"?"}`;
+        out += `\n   Bilan : ${s.goodRes?"résultat ✓":"résultat ✗"}${s.exact?" · SCORE EXACT":""} → ${s.pts} pt(s)\n`;
+        played++; pts+=s.pts; diffErrSum+=s.diffErr; if(s.exact)exact++;
+        if(s.goodRes){goodRes++;cCorr+=m.pred.conf;cCorrN++;} else {cWrong+=m.pred.conf;cWrongN++;}
+      } else {
+        out += `   Réel  : (non renseigné)\n`;
+      }
+    }
+    if(!anyReal) out += `\n(Aucune donnée réelle saisie pour cette journée.)\n`;
+  }
+
+  out += `\n===== PERFORMANCE CUMULÉE =====\n`;
+  out += `Matchs renseignés : ${played}\n`;
+  out += `Bons résultats : ${goodRes}/${played}${played?` (${Math.round(goodRes/played*100)}%)`:""}\n`;
+  out += `Scores exacts : ${exact}\n`;
+  out += `Points : ${pts} / ${played*5}\n`;
+  if(played) out += `Erreur moyenne de différence de buts : ±${(diffErrSum/played).toFixed(2)}\n`;
+  if(cCorrN||cWrongN){
+    out += `Calibration : confiance moyenne quand résultat correct = ${cCorrN?Math.round(cCorr/cCorrN):"—"}%, `;
+    out += `quand incorrect = ${cWrongN?Math.round(cWrong/cWrongN):"—"}%\n`;
+  }
+
+  const nj = nextJournee();
+  out += `\n===== DEMANDE À CLAUDE =====\n`;
+  out += `1) Analyse les données réelles de la dernière journée renseignée : mes erreurs, les équipes que je sur/sous-estime, les indicateurs (xG, tirs, possession) les plus prédictifs, et mes éventuels biais.\n`;
+  out += `2) Mets à jour ta méthode de pronostic en conséquence (sans jamais réécrire les pronostics passés).\n`;
+  out += `3) Produis ensuite les pronostics complets de la JOURNÉE ${nj} de Ligue 1 ${SEASON} : pour chaque match, score exact, sens du résultat, niveau de confiance en %, analyse concise et facteurs principaux.\n`;
   return out;
 }
-function update() {
-  const n = filledCount();
-  document.getElementById("count").textContent = n + " / 2 matchs renseignés";
-  document.getElementById("fill").style.width = Math.round(n / 2 * 100) + "%";
-  save();
-}
-app.addEventListener("input", update);
-function toast(msg) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 1800);
-}
-document.getElementById("btnCopy").onclick = () => {
-  navigator.clipboard.writeText(buildRecap()).then(
-    () => toast("Récap copié — colle-le à Claude"),
-    () => toast("Copie impossible, utilise Télécharger")
+
+/* ============================================================
+   Actions
+   ============================================================ */
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
+
+document.getElementById("btnCopy").onclick=()=>{
+  const txt=buildCopy();
+  navigator.clipboard.writeText(txt).then(
+    ()=>toast("Texte copié — colle-le dans ta conversation Claude"),
+    ()=>{ // fallback
+      const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select();
+      try{document.execCommand("copy"); toast("Texte copié");}catch(e){toast("Copie impossible sur ce navigateur");}
+      document.body.removeChild(ta);
+    }
   );
 };
-document.getElementById("btnDl").onclick = () => {
-  const blob = new Blob([buildRecap()], { type: "text/plain;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "stats-j1-cdm2026.txt";
-  a.click();
-  URL.revokeObjectURL(a.href);
+document.getElementById("btnReset").onclick=()=>{
+  if(confirm("Effacer toutes les données réelles saisies ? Les pronostics de Claude ne sont pas touchés.")){
+    REAL={}; save(); renderAll();
+  }
 };
-load();
-update();
+
+function renderAll(){ renderNav(); renderMatches(); renderDash();
+  document.getElementById("nextj").textContent = "Préparer la J"+nextJournee();
+  document.getElementById("footnote").innerHTML =
+    "<b>Comment ça marche.</b> Les pronostics de Claude sont figés et ne changent jamais. Après chaque journée, renseigne les données réelles, puis touche « Copier pour Claude » : le texte structuré se copie dans ton presse-papiers, tu le colles dans la conversation, et Claude analyse ses erreurs avant de préparer la J"+nextJournee()+". Les données sont enregistrées sur cet appareil et ce navigateur.";
+}
+renderAll();
 </script>
 </body>
 </html>
