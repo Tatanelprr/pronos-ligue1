@@ -1,7 +1,6 @@
 {
   "extends": ["html-validate:recommended"],
   "rules": {
-    "button-type": "off",
     "require-sri": "off"
   }
 }
