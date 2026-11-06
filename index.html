@@ -429,6 +429,65 @@ try { REAL = JSON.parse(localStorage.getItem(STORE) || "{}"); } catch(e){ REAL =
 function save(){ try { localStorage.setItem(STORE, JSON.stringify(REAL)); } catch(e){} }
 
 const FIELDS = ["sh","sa","posH","posA","xgH","xgA","tirH","tirA","cadH","cadA"];
+
+/* ============================================================
+   Chargement automatique des données (data/jN.json déposés par
+   la GitHub Action). Ne remplit QUE les champs encore vides :
+   tes corrections manuelles ne sont jamais écrasées.
+   ============================================================ */
+const CANON = [
+  ["psg",["paris saint-germain","paris sg","psg"]],
+  ["parisfc",["paris fc"]],
+  ["marseille",["marseille"]],
+  ["monaco",["monaco"]],
+  ["lille",["lille","losc"]],
+  ["lens",["lens"]],
+  ["lyon",["lyon"]],
+  ["nice",["nice"]],
+  ["rennes",["rennes","rennais"]],
+  ["brest",["brest"]],
+  ["lehavre",["havre"]],
+  ["toulouse",["toulouse"]],
+  ["strasbourg",["strasbourg"]],
+  ["auxerre",["auxerre"]],
+  ["lorient",["lorient"]],
+  ["angers",["angers"]],
+  ["lemans",["mans"]],
+  ["troyes",["troyes","estac"]]
+];
+function canon(name){
+  const s=(name||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+  for(const [k,subs] of CANON){ if(subs.some(x=>s.includes(x))) return k; }
+  return s;
+}
+async function loadAutoData(){
+  let changed=false, loaded=[];
+  for(const j of JOURNEES){
+    let data;
+    try{
+      const r=await fetch("data/j"+j.n+".json",{cache:"no-store"});
+      if(!r.ok) continue;
+      data=await r.json();
+    }catch(e){ continue; }
+    if(!data||!Array.isArray(data.matches)) continue;
+    loaded.push(j.n);
+    for(const m of j.matches){
+      const ch=canon(m.home), ca=canon(m.away);
+      const entry=data.matches.find(x=>x.home===ch && x.away===ca);
+      if(!entry) continue;
+      if(!REAL[m.id]) REAL[m.id]={};
+      for(const f of FIELDS){
+        const v=entry[f];
+        if(v!==undefined && v!==null && v!=="" &&
+           (REAL[m.id][f]===undefined || REAL[m.id][f]==="")){
+          REAL[m.id][f]=String(v); changed=true;
+        }
+      }
+    }
+  }
+  if(changed){ save(); renderAll(); }
+  if(loaded.length){ console.log("Données auto chargées pour J"+loaded.join(", J")); }
+}
 function findMatch(id){ for(const j of JOURNEES){ for(const m of j.matches){ if(m.id===id) return {m,j}; } } return null; }
 function num(v){ if(v===undefined||v===null||v==="") return null; const n=parseFloat(String(v).replace(",",".")); return isNaN(n)?null:n; }
 function resultOf(h,a){ if(h===null||a===null) return null; return h>a?"1":(h<a?"2":"X"); }
@@ -662,6 +721,7 @@ function renderAll(){ renderNav(); renderMatches(); renderDash();
     "<b>Comment ça marche.</b> Les pronostics de Claude sont figés et ne changent jamais. Après chaque journée, renseigne les données réelles, puis touche « Copier pour Claude » : le texte structuré se copie dans ton presse-papiers, tu le colles dans la conversation, et Claude analyse ses erreurs avant de préparer la J"+nextJournee()+". Les données sont enregistrées sur cet appareil et ce navigateur.";
 }
 renderAll();
+loadAutoData();
 </script>
 </body>
 </html>

@@ -1,0 +1,50 @@
+name: Auto stats Ligue 1
+
+# Se réveille à 01h, 03h et 06h (heure de Paris en hiver ≈ UTC+1).
+# À chaque réveil, le script vérifie si la prochaine journée est terminée.
+# Si oui : récupère les stats Sofascore, les commit dans data/, ouvre une issue
+# (GitHub t'envoie alors un mail si tu « watches » le dépôt).
+# Si la récupération échoue (blocage anti-bot) : ouvre une issue de repli.
+on:
+  schedule:
+    - cron: "0 0,2,5 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Récupérer la journée
+        id: fetch
+        run: node scripts/fetch-round.mjs
+
+      - name: Commit des données
+        if: steps.fetch.outputs.action == 'ready'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git commit -m "Stats auto journée ${{ steps.fetch.outputs.round }}" || echo "rien à committer"
+          git push
+
+      - name: Issue — journée prête
+        if: steps.fetch.outputs.action == 'ready'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "Journée ${{ steps.fetch.outputs.round }} prête — à envoyer à Claude" --body-file issue.md
+
+      - name: Issue — récupération échouée
+        if: steps.fetch.outputs.action == 'blocked'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "Journée ${{ steps.fetch.outputs.round }} — récupération auto échouée" --body-file issue.md

@@ -45,6 +45,22 @@ Les données réelles saisies sont conservées dans le `localStorage` du navigat
 
 ---
 
+## Récupération automatique des stats
+
+Le workflow `.github/workflows/auto-stats.yml` tourne chaque nuit (00h, 02h et 05h UTC) et peut aussi être lancé à la main via « Run workflow ». Il exécute `scripts/fetch-round.mjs`, qui :
+
+1. lit `data/state.json` pour connaître la prochaine journée à traiter (dernière journée traitée + 1) ;
+2. vérifie auprès de l'API (non officielle) de Sofascore que tous les matchs de cette journée sont terminés — sinon il s'arrête (« journée pas encore terminée ») ;
+3. récupère pour chaque match le score, la possession, les xG, les tirs et les tirs cadrés ;
+4. écrit `data/jN.json`, met à jour `data/state.json`, puis le workflow commit ces fichiers sur `main` ;
+5. ouvre une issue « Journée N prête » (notification par mail si l'on suit les issues du dépôt).
+
+Au chargement, la page lit les `data/jN.json` disponibles (`loadAutoData()`) et pré-remplit uniquement les champs encore vides : les saisies manuelles ne sont jamais écrasées.
+
+**Limite connue.** Sofascore bloque parfois les IP de datacenter (comme celles des runners GitHub). Dans ce cas, le workflow ouvre une issue « récupération auto échouée » : il suffit alors de saisir la journée à la main sur le site, comme avant.
+
+---
+
 ## Déploiement
 
 Le site est hébergé via **GitHub Pages**, configuré en mode *Deploy from a branch* (branche `main`, dossier racine). Aucun outil de build, aucune dépendance npm : la page est un fichier HTML autonome.
