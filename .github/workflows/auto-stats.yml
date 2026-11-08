@@ -2,9 +2,9 @@ name: Auto stats Ligue 1
 
 # Se réveille à 01h, 03h et 06h (heure de Paris en hiver ≈ UTC+1).
 # À chaque réveil, le script vérifie si la prochaine journée est terminée.
-# Si oui : récupère les stats Sofascore, les commit dans data/, ouvre une issue
+# Si oui : récupère les stats FotMob, les commit dans data/, ouvre une issue
 # (GitHub t'envoie alors un mail si tu « watches » le dépôt).
-# Si la récupération échoue (blocage anti-bot) : ouvre une issue de repli.
+# Si la récupération échoue (API modifiée ou blocage) : ouvre une issue de repli.
 on:
   schedule:
     - cron: "0 0,2,5 * * *"

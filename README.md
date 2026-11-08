@@ -50,14 +50,14 @@ Les données réelles saisies sont conservées dans le `localStorage` du navigat
 Le workflow `.github/workflows/auto-stats.yml` tourne chaque nuit (00h, 02h et 05h UTC) et peut aussi être lancé à la main via « Run workflow ». Il exécute `scripts/fetch-round.mjs`, qui :
 
 1. lit `data/state.json` pour connaître la prochaine journée à traiter (dernière journée traitée + 1) ;
-2. vérifie auprès de l'API (non officielle) de Sofascore que tous les matchs de cette journée sont terminés — sinon il s'arrête (« journée pas encore terminée ») ;
+2. vérifie auprès de l'API (non officielle) de FotMob que tous les matchs de cette journée sont terminés — sinon il s'arrête (« journée pas encore terminée ») ;
 3. récupère pour chaque match le score, la possession, les xG, les tirs et les tirs cadrés ;
-4. écrit `data/jN.json`, met à jour `data/state.json`, puis le workflow commit ces fichiers sur `main` ;
+4. écrit `data/jN.json`, met à jour `data/state.json`, puis le workflow commit ces fichiers sur `main`. S'il y a plusieurs journées terminées en retard, elles sont toutes traitées d'un coup ;
 5. ouvre une issue « Journée N prête » (notification par mail si l'on suit les issues du dépôt).
 
 Au chargement, la page lit les `data/jN.json` disponibles (`loadAutoData()`) et pré-remplit uniquement les champs encore vides : les saisies manuelles ne sont jamais écrasées.
 
-**Limite connue.** Sofascore bloque parfois les IP de datacenter (comme celles des runners GitHub). Dans ce cas, le workflow ouvre une issue « récupération auto échouée » : il suffit alors de saisir la journée à la main sur le site, comme avant.
+**Limite connue.** FotMob n'a pas d'API officielle : elle peut changer de format ou bloquer les IP de datacenter (comme celles des runners GitHub). Sofascore, utilisé au départ, renvoyait systématiquement un HTTP 403 depuis GitHub, d'où le passage à FotMob. En cas d'échec, le workflow ouvre une issue « récupération auto échouée » : il suffit alors de saisir la journée à la main sur le site, comme avant.
 
 ---
 
